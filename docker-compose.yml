@@ -1,0 +1,16 @@
+version: '3.9'
+services:
+  dev-db:
+    image: mysql
+    container_name: dev-db
+    restart: unless-stopped
+    env_file: ./.env
+    volumes:
+      - dev_db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=$DB_PASSWORD
+      - MYSQL_DATABASE=${DB_DATABASE}
+    ports:
+      - ${DB_PORT}:3306
+volumes:
+  dev_db:

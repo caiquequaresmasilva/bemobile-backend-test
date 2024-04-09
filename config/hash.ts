@@ -8,7 +8,9 @@ const hashConfig = defineConfig({
       cost: 16384,
       blockSize: 8,
       parallelization: 1,
+      saltSize: 16,
       maxMemory: 33554432,
+      keyLength: 64,
     }),
   },
 })
