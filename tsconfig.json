@@ -20,7 +20,8 @@
       "#tests/*": ["./tests/*.js"],
       "#start/*": ["./start/*.js"],
       "#config/*": ["./config/*.js"],
-      "#types/*": ["./types/*.js"]
+      "#types/*": ["./types/*.js"],
+      "#guards/*": ["./app/auth/guards/*.js"],
     }
   }
 }
