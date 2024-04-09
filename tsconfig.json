@@ -21,7 +21,7 @@
       "#start/*": ["./start/*.js"],
       "#config/*": ["./config/*.js"],
       "#types/*": ["./types/*.js"],
-      "#guards/*": ["./app/auth/guards/*.js"],
+      "#guards/*": ["./app/auth/guards/*.js"]
     }
   }
 }
