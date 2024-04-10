@@ -7,7 +7,7 @@ const jwtConfig = {
   secret: env.get('APP_KEY'),
 }
 const userProvider = sessionUserProvider({
-  model: () => import('#models/user'),
+  model: () => import('#models/usuario'),
 })
 
 const authConfig = defineConfig({

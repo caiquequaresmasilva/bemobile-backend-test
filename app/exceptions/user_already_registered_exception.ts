@@ -3,7 +3,7 @@ import { HttpContext } from '@adonisjs/core/http'
 
 export default class UserAlreadyRegisteredException extends Exception {
   constructor() {
-    super('User email already registered', { status: 400 })
+    super('Email de usuário já registrado', { status: 400 })
   }
 
   async handle(error: this, ctx: HttpContext) {
