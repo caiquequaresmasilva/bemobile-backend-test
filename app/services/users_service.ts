@@ -6,19 +6,19 @@ import UserAlreadyRegisteredException from '#exceptions/user_already_registered_
 @inject()
 export default class UserService {
   constructor(protected repo: UsersRepository) {}
-  async create({ email, password }: UserProps): Promise<Omit<UserProps, 'password'>> {
+  async create({ email, senha }: UserProps): Promise<Omit<UserProps, 'senha'>> {
     const user = await this.repo.findByEmail(email)
     if (user) {
       throw new UserAlreadyRegisteredException()
     }
-    const newUser = await this.repo.create({ email, password })
+    const newUser = await this.repo.create({ email, senha })
     return {
       id: newUser.id,
       email: newUser.email,
     }
   }
 
-  async verify(user: UserProps): Promise<Omit<UserProps, 'password'>> {
+  async verify(user: UserProps): Promise<Omit<UserProps, 'senha'>> {
     return this.repo.verify(user)
   }
 }

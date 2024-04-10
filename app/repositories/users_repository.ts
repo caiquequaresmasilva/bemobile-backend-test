@@ -2,15 +2,15 @@ import User from '#models/user'
 import { UserProps } from '#types/user'
 
 export default class UsersRepository {
-  async create({ email, password }: UserProps): Promise<User> {
+  async create({ email, senha }: UserProps): Promise<User> {
     return User.create({
       email,
-      password,
+      senha,
     })
   }
 
-  async verify({ email, password }: UserProps): Promise<User> {
-    return User.verifyCredentials(email, password)
+  async verify({ email, senha }: UserProps): Promise<User> {
+    return User.verifyCredentials(email, senha)
   }
 
   async findByEmail(email: string): Promise<User | null> {
