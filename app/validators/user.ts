@@ -5,6 +5,6 @@ const PASSWORD_PATTERN = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
 export const createUserValidator = vine.compile(
   vine.object({
     email: vine.string().email().trim(),
-    password: vine.string().trim().regex(PASSWORD_PATTERN),
+    senha: vine.string().trim().regex(PASSWORD_PATTERN),
   })
 )

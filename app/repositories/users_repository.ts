@@ -1,19 +1,19 @@
-import User from '#models/user'
-import { UserProps } from '#types/user'
+import Usuario from '#models/usuario'
+import { PropsUsuario } from '#types/usuario'
 
-export default class UsersRepository {
-  async create({ email, password }: UserProps): Promise<User> {
-    return User.create({
+export default class UsuariosRepository {
+  async create({ email, senha }: PropsUsuario): Promise<Usuario> {
+    return Usuario.create({
       email,
-      password,
+      senha,
     })
   }
 
-  async verify({ email, password }: UserProps): Promise<User> {
-    return User.verifyCredentials(email, password)
+  async verify({ email, senha }: PropsUsuario): Promise<Usuario> {
+    return Usuario.verifyCredentials(email, senha)
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    return User.findBy('email', email)
+  async findByEmail(email: string): Promise<Usuario | null> {
+    return Usuario.findBy('email', email)
   }
 }
