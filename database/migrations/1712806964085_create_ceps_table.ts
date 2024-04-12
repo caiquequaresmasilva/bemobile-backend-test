@@ -7,6 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('logradouro')
+      table.string('cep').unique()
       table.integer('bairro_id').unsigned().references('bairros.id').onDelete('CASCADE')
       table.integer('cidade_id').unsigned().references('cidades.id').onDelete('CASCADE')
       table.integer('uf_id').unsigned().references('ufs.id').onDelete('CASCADE')
