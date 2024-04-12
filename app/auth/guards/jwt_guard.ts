@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken'
 import { JwtGuardOptions, JwtToken, JwtUserProviderContract } from '#types/guards'
-import { errors, symbols } from '@adonisjs/auth'
+import { symbols } from '@adonisjs/auth'
 import { AuthClientResponse, GuardContract } from '@adonisjs/auth/types'
 import { HttpContext } from '@adonisjs/core/http'
+import UnauthorizedException from '#exceptions/unauthorized_exception'
 
 export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
   implements GuardContract<UserProvider[typeof symbols.PROVIDER_REAL_USER]>
@@ -46,30 +47,22 @@ export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
 
     const authHeader = this.#ctx.request.header('authorization')
     if (!authHeader) {
-      throw new errors.E_UNAUTHORIZED_ACCESS('Unauthorized access', {
-        guardDriverName: this.driverName,
-      })
+      throw new UnauthorizedException()
     }
 
     const [, token] = authHeader.split('Bearer ')
     if (!token) {
-      throw new errors.E_UNAUTHORIZED_ACCESS('Unauthorized access', {
-        guardDriverName: this.driverName,
-      })
+      throw new UnauthorizedException()
     }
 
     const payload = jwt.verify(token, this.#options.secret)
     if (typeof payload !== 'object' || !('userId' in payload)) {
-      throw new errors.E_UNAUTHORIZED_ACCESS('Unauthorized access', {
-        guardDriverName: this.driverName,
-      })
+      throw new UnauthorizedException()
     }
 
     const providerUser = await this.#userProvider.findById(payload.userId)
     if (!providerUser) {
-      throw new errors.E_UNAUTHORIZED_ACCESS('Unauthorized access', {
-        guardDriverName: this.driverName,
-      })
+      throw new UnauthorizedException()
     }
 
     this.user = providerUser.getOriginal()
@@ -87,9 +80,7 @@ export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
 
   getUserOrFail(): UserProvider[typeof symbols.PROVIDER_REAL_USER] {
     if (!this.user) {
-      throw new errors.E_UNAUTHORIZED_ACCESS('Unauthorized access', {
-        guardDriverName: this.driverName,
-      })
+      throw new UnauthorizedException()
     }
 
     return this.user
