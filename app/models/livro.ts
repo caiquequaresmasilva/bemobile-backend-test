@@ -1,7 +1,8 @@
-import { BaseModel, belongsTo, column, hasOne } from '@adonisjs/lucid/orm'
-import type { BelongsTo, HasOne } from '@adonisjs/lucid/types/relations'
+import { BaseModel, belongsTo, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasMany, HasOne } from '@adonisjs/lucid/types/relations'
 import Autor from './autor.js'
 import DadosLivro from './dados_livro.js'
+import Venda from './venda.js'
 
 export default class Livro extends BaseModel {
   static table = 'livros'
@@ -25,4 +26,7 @@ export default class Livro extends BaseModel {
 
   @hasOne(() => DadosLivro)
   declare dados: HasOne<typeof DadosLivro>
+
+  @hasMany(() => Venda)
+  declare vendas: HasMany<typeof Venda>
 }

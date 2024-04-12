@@ -1,6 +1,7 @@
-import { BaseModel, column, hasOne } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
 import DadosCliente from './dados_cliente.js'
-import type { HasOne } from '@adonisjs/lucid/types/relations'
+import type { HasMany, HasOne } from '@adonisjs/lucid/types/relations'
+import Venda from './venda.js'
 
 export default class Cliente extends BaseModel {
   static table = 'clientes'
@@ -15,4 +16,7 @@ export default class Cliente extends BaseModel {
 
   @hasOne(() => DadosCliente)
   declare dados: HasOne<typeof DadosCliente>
+
+  @hasMany(() => Venda)
+  declare vendas: HasMany<typeof Venda>
 }
