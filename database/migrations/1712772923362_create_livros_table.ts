@@ -10,6 +10,7 @@ export default class extends BaseSchema {
       table.string('subtitulo').nullable()
       table.integer('autor_id').unsigned().references('autores.id').onDelete('CASCADE')
       table.decimal('preco')
+      table.timestamp('deleted_at').nullable()
     })
   }
 

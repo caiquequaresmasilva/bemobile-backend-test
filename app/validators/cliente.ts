@@ -3,15 +3,15 @@ import { cpfRule } from './rules/cpf.js'
 
 export const createClienteValidation = vine.compile(
   vine.object({
-    nome: vine.string().alpha().trim().minLength(3),
+    nome: vine.string().alpha({ allowSpaces: true }).trim().minLength(3),
     email: vine.string().trim().email(),
     logradouro: vine.string().alphaNumeric({ allowSpaces: true }).minLength(5).trim(),
-    bairro: vine.string().alpha().minLength(1).trim(),
+    bairro: vine.string().alpha({ allowSpaces: true }).minLength(1).trim(),
     numero: vine
       .string()
       .trim()
       .regex(/^[0-9]*$/),
-    cidade: vine.string().alpha().minLength(3).trim(),
+    cidade: vine.string().alpha({ allowSpaces: true }).minLength(3).trim(),
     uf: vine
       .string()
       .trim()
@@ -38,7 +38,7 @@ export const updateClienteVavidator = vine.compile(
   vine.object({
     cliente: vine
       .object({
-        nome: vine.string().alpha().trim().minLength(3).optional(),
+        nome: vine.string().alpha({ allowSpaces: true }).trim().minLength(3).optional(),
         email: vine.string().trim().email().optional(),
       })
       .optional(),
@@ -73,15 +73,10 @@ export const updateClienteVavidator = vine.compile(
     cep: vine
       .object({
         logradouro: vine.string().alphaNumeric({ allowSpaces: true }).minLength(5).trim(),
-        bairro: vine.string().alpha().minLength(1).trim(),
-        uf: vine
-          .string()
-          .trim()
-          .regex(/^[a-zA-Z]*$/)
-          .fixedLength(2)
-          .toUpperCase(),
+        bairro: vine.string().alpha({ allowSpaces: true }).minLength(1).trim(),
+        uf: vine.string().trim().alpha().fixedLength(2).toUpperCase(),
         cep: vine.string().postalCode({ countryCode: ['BR'] }),
-        cidade: vine.string().alpha().minLength(3).trim(),
+        cidade: vine.string().alpha({ allowSpaces: true }).minLength(3).trim(),
       })
       .optional(),
   })
