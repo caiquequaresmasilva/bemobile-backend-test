@@ -1,6 +1,6 @@
-import { BaseModel, belongsTo, column, hasOne } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import DadosCliente from './dados_cliente.js'
-import type { BelongsTo, HasOne } from '@adonisjs/lucid/types/relations'
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import Cep from './cep.js'
 
 export default class Endereco extends BaseModel {
@@ -14,8 +14,8 @@ export default class Endereco extends BaseModel {
   @column()
   declare complemento: string
 
-  @hasOne(() => DadosCliente)
-  declare dadosCliente: HasOne<typeof DadosCliente>
+  @hasMany(() => DadosCliente)
+  declare dadosCliente: HasMany<typeof DadosCliente>
 
   @column({ serializeAs: null })
   declare cepId: number

@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.integer('cliente_id').unsigned().references('clientes.id').onDelete('CASCADE')
       table.integer('endereco_id').unsigned().references('enderecos.id').onDelete('CASCADE')
       table.string('cpf').unique()
-      table.string('telefone')
+      table.string('telefone').unique()
     })
   }
 
