@@ -3,8 +3,10 @@ import type { BelongsTo, HasMany, HasOne } from '@adonisjs/lucid/types/relations
 import Autor from './autor.js'
 import DadosLivro from './dados_livro.js'
 import Venda from './venda.js'
+import { compose } from '@adonisjs/core/helpers'
+import { SoftDeletes } from 'adonis-lucid-soft-deletes'
 
-export default class Livro extends BaseModel {
+export default class Livro extends compose(BaseModel, SoftDeletes) {
   static table = 'livros'
   @column({ isPrimary: true })
   declare id: number
