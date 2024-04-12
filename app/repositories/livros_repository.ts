@@ -31,7 +31,10 @@ export default class LivrosRepository {
 
   private async _serializeLivro(livro: DBLivro): Promise<PropsLivro> {
     return {
-      ...livro,
+      id: livro.id,
+      titulo: livro.titulo,
+      subtitulo: livro.subtitulo,
+      preco: livro.preco,
       autor: livro.autor.nome,
     }
   }
@@ -93,25 +96,27 @@ export default class LivrosRepository {
     })
   }
 
-  async update(id: number, { preco, subtitulo, titulo }: UpdateLivro): Promise<PropsLivro> {
-    return await db.transaction(async (trx) => {
+  async update(
+    id: number,
+    { preco, subtitulo = '', titulo }: UpdateLivro
+  ): Promise<PropsLivro | null> {
+    await db.transaction(async (trx) => {
       const livro = await Livro.findOrFail(id)
       livro.useTransaction(trx)
       await livro.load('autor')
       await livro.merge({ preco, subtitulo, titulo }).save()
-      return {
-        id: livro.id,
-        titulo: livro.titulo,
-        subtitulo: livro.subtitulo,
-        autor: livro.autor.nome,
-        preco: livro.preco,
-      }
     })
+    const response = await Livro.findOrFail(id)
+    await response.load('autor')
+    return this._serializeLivro(response)
   }
 
   async getLivros(): Promise<PropsLivro[]> {
     const livros = await Livro.query().preload('autor')
-    return await Promise.all(livros.map(this._serializeLivro))
+    const mapedLivros = await Promise.all(livros.map(this._serializeLivro))
+    return mapedLivros.sort((a, b) =>
+      `${a.titulo}${a.subtitulo || ''}`.localeCompare(`${b.titulo}${b.subtitulo || ''}`)
+    )
   }
 
   async getLivroById(id: number): Promise<PropsLivro | null> {

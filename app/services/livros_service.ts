@@ -33,7 +33,7 @@ export default class LivrosService {
   }
 
   async getLivros() {
-    this.repo.getLivros()
+    return this.repo.getLivros()
   }
 
   async getLivroById(id: number) {

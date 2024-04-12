@@ -8,7 +8,7 @@ export const createLivroValidator = vine.compile(
     preco: vine.number().decimal(2).positive(),
     editora: vine.string().alphaNumeric({ allowSpaces: true }).minLength(2),
     idioma: vine.string().alpha().minLength(2),
-    publicacao: vine.date({ formats: 'dd-mm-yy' }),
+    publicacao: vine.date({ formats: { utc: true, format: 'DD-MM-YYYY' } }),
     dimensoes: vine
       .string()
       .trim()
@@ -18,8 +18,8 @@ export const createLivroValidator = vine.compile(
 
 export const updateLivroValidator = vine.compile(
   vine.object({
-    titulo: vine.string().alphaNumeric({ allowSpaces: true }).minLength(2),
+    titulo: vine.string().alphaNumeric({ allowSpaces: true }).minLength(2).optional(),
     subtitulo: vine.string().alphaNumeric({ allowSpaces: true }).minLength(1).optional(),
-    preco: vine.number().decimal(2).positive(),
+    preco: vine.number().decimal(2).positive().optional(),
   })
 )
