@@ -11,7 +11,7 @@ export type LivroWithDetails = {
   editora: string
   idioma: string
   dimensoes: string
-  publicacao: DateTime
+  publicacao: Date
 } & PropsLivro
 
 export type UpdateLivro = {

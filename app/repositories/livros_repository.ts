@@ -12,6 +12,7 @@ import Idioma from '#models/idioma'
 import db from '@adonisjs/lucid/services/db'
 import { TransactionClientContract } from '@adonisjs/lucid/types/database'
 import Livro from '#models/livro'
+import { DateTime } from 'luxon'
 
 export default class LivrosRepository {
   private MODELS = {
@@ -44,7 +45,7 @@ export default class LivrosRepository {
       dimensoes: livro.dados.dimensoes,
       editora: livro.dados.editora.nome,
       idioma: livro.dados.idioma.nome,
-      publicacao: livro.dados.publicacao,
+      publicacao: livro.dados.publicacao.toJSDate(),
     }
   }
 
@@ -78,7 +79,7 @@ export default class LivrosRepository {
           editoraId: editora.id,
           idiomaId: idioma.id,
           dimensoes: payload.dimensoes,
-          publicacao: payload.publicacao,
+          publicacao: DateTime.fromJSDate(payload.publicacao),
         },
         { client: trx }
       )
