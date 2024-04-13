@@ -1,14 +1,15 @@
 import vine from '@vinejs/vine'
-
+const TEXT_PATTERN = /^(?=.*[a-zA-Z])[a-zA-Z0-9áàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ',.\s]{1,}$/
+const IDIOMA_PATTERN = /^(?=.*[a-zA-Z])[a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]{1,}$/
 export const createLivroValidator = vine.compile(
   vine.object({
-    titulo: vine.string().alphaNumeric({ allowSpaces: true }).minLength(2),
-    subtitulo: vine.string().alphaNumeric({ allowSpaces: true }).minLength(1).optional(),
-    autor: vine.string().alpha({ allowSpaces: true }).minLength(2),
+    titulo: vine.string().minLength(2).regex(TEXT_PATTERN),
+    subtitulo: vine.string().minLength(1).regex(TEXT_PATTERN).optional(),
+    autor: vine.string().minLength(2).regex(TEXT_PATTERN),
     preco: vine.number().decimal(2).positive(),
-    editora: vine.string().alphaNumeric({ allowSpaces: true }).minLength(2),
-    idioma: vine.string().alpha().minLength(2),
-    publicacao: vine.date({ formats: { utc: true, format: 'DD-MM-YYYY' } }),
+    editora: vine.string().minLength(2).regex(TEXT_PATTERN),
+    idioma: vine.string().minLength(2).regex(IDIOMA_PATTERN),
+    publicacao: vine.date({ formats: ['DD-MM-YYYY'] }),
     dimensoes: vine
       .string()
       .trim()
@@ -18,8 +19,8 @@ export const createLivroValidator = vine.compile(
 
 export const updateLivroValidator = vine.compile(
   vine.object({
-    titulo: vine.string().alphaNumeric({ allowSpaces: true }).minLength(2).optional(),
-    subtitulo: vine.string().alphaNumeric({ allowSpaces: true }).minLength(1).optional(),
+    titulo: vine.string().minLength(2).regex(TEXT_PATTERN).optional(),
+    subtitulo: vine.string().minLength(1).regex(TEXT_PATTERN).optional(),
     preco: vine.number().decimal(2).positive().optional(),
   })
 )
