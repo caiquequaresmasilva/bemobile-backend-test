@@ -11,7 +11,7 @@ export default class extends BaseSchema {
       table.integer('quantidade')
       table.decimal('preco_unitario')
       table.decimal('preco_total')
-      table.timestamp('data')
+      table.timestamp('data', { useTz: true }).defaultTo(this.now())
     })
   }
 
