@@ -18,7 +18,12 @@ export default class Venda extends BaseModel {
   @column()
   declare precoTotal: number
 
-  @column()
+  @column.dateTime({
+    autoCreate: true,
+    serialize: (date: DateTime) => {
+      return date.setZone('UTC-3').toFormat('dd-LL-yyyy HH:mm:ss')
+    },
+  })
   declare data: DateTime
 
   @column({ serializeAs: null })
