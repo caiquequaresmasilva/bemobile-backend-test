@@ -33,12 +33,11 @@ export default class VendasRepository {
   }
 
   async validateId(model: 'Cliente' | 'Livro', id: number): Promise<string> {
-    let error = ''
     const data = await this.MODELS[model].findBy({ id })
     if (!data) {
-      error = `${model} não encontrado.`
+      return `${model} não encontrado.`
     }
-    return error
+    return ''
   }
   async create({
     clienteId,
