@@ -1,21 +1,21 @@
 import Cliente from '#models/cliente'
 import Livro from '#models/livro'
 import Venda from '#models/venda'
-import { DBVenda, PropsVenda, VendaFull, VendasFilter } from '#types/venda'
+import { PropsVenda, VendaFull, VendasFilter } from '#types/venda'
 import db from '@adonisjs/lucid/services/db'
-
 export default class VendasRepository {
   private MODELS = {
     Cliente,
     Livro,
   }
 
-  private async _serializeVenda(raw: DBVenda): Promise<VendaFull> {
+  private async _serializeVenda(venda: Venda): Promise<VendaFull> {
+    const raw = venda.toJSON()
     return {
       id: raw.id,
-      data: raw.data.toJSDate(),
-      precoTotal: raw.precoTotal,
-      precoUnitario: raw.precoUnitario,
+      data: raw.data,
+      precoTotal: Number(raw.precoTotal),
+      precoUnitario: Number(raw.precoUnitario),
       quantidade: raw.quantidade,
       livro: {
         id: raw.livro.id,
@@ -28,7 +28,10 @@ export default class VendasRepository {
 
   private _filterFunction(ano: number, mes: number) {
     return ({ data }: Venda) => {
-      return data.month === (mes || data.month) || data.year === (ano || data.year)
+      const localDate = data.setZone('UTC-3')
+      return (
+        localDate.month === (mes || localDate.month) && localDate.year === (ano || localDate.year)
+      )
     }
   }
 
@@ -39,20 +42,15 @@ export default class VendasRepository {
     }
     return ''
   }
-  async create({
-    clienteId,
-    livroId,
-    precoTotal,
-    precoUnitario,
-    quantidade,
-  }: PropsVenda): Promise<PropsVenda> {
+  async create({ clienteId, livroId, quantidade }: PropsVenda): Promise<PropsVenda> {
     return await db.transaction(async (trx) => {
+      const livro = await Livro.findOrFail(livroId)
       const venda = await Venda.create(
         {
           clienteId,
           livroId,
-          precoTotal,
-          precoUnitario,
+          precoTotal: quantidade * livro.preco,
+          precoUnitario: livro.preco,
           quantidade,
         },
         { client: trx }
@@ -60,7 +58,7 @@ export default class VendasRepository {
       return {
         id: venda.id,
         quantidade: venda.quantidade,
-        precoUnitario: venda.precoUnitario,
+        precoUnitario: Number(venda.precoUnitario),
         precoTotal: venda.precoTotal,
         clienteId: venda.clienteId,
         livroId: venda.livroId,
@@ -70,12 +68,12 @@ export default class VendasRepository {
 
   async getVendasByCliente({ id, ano = 0, mes = 0 }: VendasFilter) {
     let vendas = await Venda.query()
-      .where('id', id)
+      .where('cliente_id', id)
       .orderBy('data', 'asc')
       .preload('livro', (livroQuery) => {
         livroQuery.preload('autor')
       })
     vendas = vendas.filter(this._filterFunction(ano, mes))
-    return vendas.map(this._serializeVenda)
+    return Promise.all(vendas.map(this._serializeVenda))
   }
 }

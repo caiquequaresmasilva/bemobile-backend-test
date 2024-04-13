@@ -11,7 +11,9 @@ import { middleware } from './kernel.js'
 const UsersController = () => import('#controllers/users_controller')
 const ClientesController = () => import('#controllers/clientes_controller')
 const LivrosController = () => import('#controllers/livros_controller')
+const VendasController = () => import('#controllers/vendas_controller')
 
+router.where('id', router.matchers.number())
 router.get('/', async () => {
   return {
     hello: 'world',
@@ -34,6 +36,7 @@ router
     router.get('', [ClientesController, 'index'])
     router.get(':id', [ClientesController, 'show'])
     router.delete(':id', [ClientesController, 'delete'])
+    router.get(':id/vendas', [VendasController, 'filterByCliente'])
   })
   .prefix('clientes')
   .use(middleware.auth())
@@ -49,3 +52,6 @@ router
   })
   .prefix('livros')
   .use(middleware.auth())
+
+// Rotas de vendas
+router.post('vendas', [VendasController, 'store']).use(middleware.auth())
