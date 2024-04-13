@@ -44,6 +44,7 @@ export default class VendasRepository {
   }
   async create({ clienteId, livroId, quantidade }: PropsVenda): Promise<PropsVenda> {
     return await db.transaction(async (trx) => {
+      // Resgata a informação de preco direto do livro e calcula o total
       const livro = await Livro.findOrFail(livroId)
       const venda = await Venda.create(
         {

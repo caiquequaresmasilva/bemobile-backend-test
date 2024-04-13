@@ -114,6 +114,7 @@ export default class LivrosRepository {
   async getLivros(): Promise<PropsLivro[]> {
     const livros = await Livro.query().preload('autor')
     const mapedLivros = await Promise.all(livros.map(this._serializeLivro))
+    // Organiza os livros em ordem alfabetica considerando titulo e subtitulo
     return mapedLivros.sort((a, b) =>
       `${a.titulo}${a.subtitulo || ''}`.localeCompare(`${b.titulo}${b.subtitulo || ''}`)
     )
@@ -130,6 +131,7 @@ export default class LivrosRepository {
   }
 
   async delete(id: number) {
+    // Executa soft delete através do plugin 'adonis-lucid-soft-deletes'
     const livro = await Livro.findOrFail(id)
     await livro.delete()
   }

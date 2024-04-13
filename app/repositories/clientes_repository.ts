@@ -138,16 +138,20 @@ export default class ClientesRepository {
         })
       })
       dbCliente.useTransaction(trx)
+      //Verifica se o cliente vai ser atualizado
       if (cliente) {
         await dbCliente.merge({ ...cliente }).save()
       }
+      //verifica se os dados do cliente vai ser atualizado
       if (dados) {
         await dbCliente.dados.merge({ ...dados }).save()
       }
+      // Verifica se o endereco vai ser atualizado
       if (endereco) {
         await dbCliente.dados.load('endereco')
         await dbCliente.dados.endereco.merge({ ...endereco }).save()
       }
+      // Verifica se o CEP vai ser atualizado
       if (cep) {
         const bairro = (await this._findOrCreate({ nome: cep.bairro }, 'Bairro', trx)) as Bairro
         const cidade = (await this._findOrCreate({ nome: cep.cidade }, 'Cidade', trx)) as Cidade
