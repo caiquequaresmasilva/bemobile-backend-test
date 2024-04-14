@@ -12,8 +12,11 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
-    "docker:up": "docker compose up -d --build",
-    "docker:down": "docker compose down"
+    "docker-dev:up": "docker compose --profile development up -d --build",
+    "docker-dev:down": "docker compose --profile development down",
+    "docker-test:up": "docker compose --profile test up -d --build",
+    "docker-test:down": "docker compose --profile test down",
+    "set-db": "node ace migration:run && node ace db:seed"
   },
   "imports": {
     "#controllers/*": "./app/controllers/*.js",

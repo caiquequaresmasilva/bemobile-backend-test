@@ -1,5 +1,4 @@
 import {
-  DBFullLivro,
   DBLivro,
   LivroExistsParams,
   LivroWithDetails,
@@ -34,21 +33,22 @@ export default class LivrosRepository {
       id: livro.id,
       titulo: livro.titulo,
       subtitulo: livro.subtitulo,
-      preco: livro.preco,
+      preco: Number(livro.preco),
       autor: livro.autor.nome,
     }
   }
-  private async _serializeFullLivro(livro: DBFullLivro): Promise<LivroWithDetails> {
+  private async _serializeFullLivro(raw: Livro): Promise<LivroWithDetails> {
+    const livro = raw.toJSON()
     return {
       id: livro.id,
       titulo: livro.titulo,
       subtitulo: livro.subtitulo,
-      preco: livro.preco,
+      preco: Number(livro.preco),
       autor: livro.autor.nome,
       dimensoes: livro.dados.dimensoes,
       editora: livro.dados.editora.nome,
       idioma: livro.dados.idioma.nome,
-      publicacao: livro.dados.publicacao.toJSDate(),
+      publicacao: livro.dados.publicacao,
     }
   }
 
@@ -114,6 +114,7 @@ export default class LivrosRepository {
   async getLivros(): Promise<PropsLivro[]> {
     const livros = await Livro.query().preload('autor')
     const mapedLivros = await Promise.all(livros.map(this._serializeLivro))
+    // Organiza os livros em ordem alfabetica considerando titulo e subtitulo
     return mapedLivros.sort((a, b) =>
       `${a.titulo}${a.subtitulo || ''}`.localeCompare(`${b.titulo}${b.subtitulo || ''}`)
     )
@@ -130,6 +131,7 @@ export default class LivrosRepository {
   }
 
   async delete(id: number) {
+    // Executa soft delete através do plugin 'adonis-lucid-soft-deletes'
     const livro = await Livro.findOrFail(id)
     await livro.delete()
   }

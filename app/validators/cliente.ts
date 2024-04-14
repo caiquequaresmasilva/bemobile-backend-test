@@ -1,17 +1,18 @@
 import vine from '@vinejs/vine'
 import { cpfRule } from './rules/cpf.js'
-
+const NOME_PATTERN = /^(?=.*[a-zA-Z])[a-zA-ZáàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ'\s]{1,}$/
+const ENDERECO_PATTERN = /^(?=.*[a-zA-Z])[a-zA-Z0-9áàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ',.\s]{1,}$/
 export const createClienteValidation = vine.compile(
   vine.object({
-    nome: vine.string().alpha({ allowSpaces: true }).trim().minLength(3),
+    nome: vine.string().trim().minLength(3).regex(NOME_PATTERN),
     email: vine.string().trim().email(),
-    logradouro: vine.string().alphaNumeric({ allowSpaces: true }).minLength(5).trim(),
-    bairro: vine.string().alpha({ allowSpaces: true }).minLength(1).trim(),
+    logradouro: vine.string().minLength(5).regex(ENDERECO_PATTERN).trim(),
+    bairro: vine.string().regex(ENDERECO_PATTERN).minLength(1).trim(),
     numero: vine
       .string()
       .trim()
       .regex(/^[0-9]*$/),
-    cidade: vine.string().alpha({ allowSpaces: true }).minLength(3).trim(),
+    cidade: vine.string().regex(NOME_PATTERN).minLength(3).trim(),
     uf: vine
       .string()
       .trim()
@@ -25,7 +26,7 @@ export const createClienteValidation = vine.compile(
       .regex(/^[0-9]*$/)
       .minLength(10)
       .maxLength(11),
-    complemento: vine.string().alphaNumeric({ allowSpaces: true }).optional(),
+    complemento: vine.string().regex(ENDERECO_PATTERN).optional(),
     cpf: vine
       .string()
       .trim()
@@ -38,7 +39,7 @@ export const updateClienteVavidator = vine.compile(
   vine.object({
     cliente: vine
       .object({
-        nome: vine.string().alpha({ allowSpaces: true }).trim().minLength(3).optional(),
+        nome: vine.string().trim().minLength(3).regex(NOME_PATTERN).optional(),
         email: vine.string().trim().email().optional(),
       })
       .optional(),
@@ -67,16 +68,16 @@ export const updateClienteVavidator = vine.compile(
           .trim()
           .regex(/^[0-9]*$/)
           .optional(),
-        complemento: vine.string().alphaNumeric({ allowSpaces: true }).optional(),
+        complemento: vine.string().regex(ENDERECO_PATTERN).optional(),
       })
       .optional(),
     cep: vine
       .object({
-        logradouro: vine.string().alphaNumeric({ allowSpaces: true }).minLength(5).trim(),
-        bairro: vine.string().alpha({ allowSpaces: true }).minLength(1).trim(),
+        logradouro: vine.string().minLength(5).regex(ENDERECO_PATTERN).trim(),
+        bairro: vine.string().regex(ENDERECO_PATTERN).minLength(1).trim(),
         uf: vine.string().trim().alpha().fixedLength(2).toUpperCase(),
         cep: vine.string().postalCode({ countryCode: ['BR'] }),
-        cidade: vine.string().alpha({ allowSpaces: true }).minLength(3).trim(),
+        cidade: vine.string().regex(NOME_PATTERN).minLength(3).trim(),
       })
       .optional(),
   })

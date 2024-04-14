@@ -10,7 +10,7 @@ const calculateDigit = (baseDigits: string, initialFactor: number = 0) => {
   return (digit % 11).toString().slice(-1)
 }
 
-async function cpf(value: unknown, options: undefined, field: FieldContext) {
+async function cpf(value: unknown, _options: undefined, field: FieldContext) {
   if (typeof value !== 'string') {
     return
   }

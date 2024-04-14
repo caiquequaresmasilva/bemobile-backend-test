@@ -33,7 +33,7 @@ export default class DadosLivro extends BaseModel {
 
   @column.date({
     serialize: (value: DateTime) => {
-      return value.toFormat('dd-LL-yyyy')
+      return value.toFormat('dd-MM-yyyy')
     },
   })
   declare publicacao: DateTime
