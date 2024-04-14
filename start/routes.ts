@@ -14,6 +14,7 @@ const LivrosController = () => import('#controllers/livros_controller')
 const VendasController = () => import('#controllers/vendas_controller')
 
 router.where('id', router.matchers.number())
+
 router.get('/', async () => {
   return {
     hello: 'world',
