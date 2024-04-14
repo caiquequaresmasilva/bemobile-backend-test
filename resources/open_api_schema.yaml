@@ -674,9 +674,11 @@ paths:
                       quantidade:
                         type: integer
                       precoUnitario:
-                        type: integer
+                        type: number
+                        format: float
                       precoTotal:
-                        type: integer
+                        type: number
+                        format: float
                       clienteId:
                         type: integer
                       livroId:

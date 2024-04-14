@@ -4,7 +4,10 @@ import { test } from '@japa/runner'
 
 test.group('Usuarios signup', (group) => {
   const ENDPOINT = '/usuarios'
-  group.teardown(() => testUtils.db().truncate())
+  group.teardown(async () => {
+    const truncate = await testUtils.db().truncate()
+    await truncate()
+  })
   test('Registra um novo usuário e retorna seus dados', async ({ client }) => {
     const response = await client.post(ENDPOINT).json(USUARIO)
     response.assertAgainstApiSpec()

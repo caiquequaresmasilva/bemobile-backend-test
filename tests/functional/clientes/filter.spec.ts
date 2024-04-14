@@ -1,5 +1,6 @@
 import Usuario from '#models/usuario'
 import { CLIENTE } from '#tests/mocks/cliente'
+import { LIVRO } from '#tests/mocks/livro'
 import { USUARIO } from '#tests/mocks/usuario'
 import testUtils from '@adonisjs/core/services/test_utils'
 import { test } from '@japa/runner'
@@ -11,20 +12,23 @@ test.group('Clientes filter', (group) => {
   const ENDPOINT = '/clientes'
   let user: Usuario
   group.setup(async () => {
-    testUtils.db().seed()
     user = await Usuario.create(USUARIO)
   })
-  group.teardown(() => testUtils.db().truncate())
+  group.teardown(async () => {
+    const truncate = await testUtils.db().truncate()
+    await truncate()
+  })
   test('Retorna todas as vendas de um cliente especifico quando não há filtros de ano e mês', async ({
     client,
   }) => {
+    const livro = await client.post('/livros').json(LIVRO).loginAs(user)
     const resp = await client.post(ENDPOINT).json(CLIENTE).loginAs(user)
     id = resp.body().data.id
     await client
       .post('/vendas')
       .json({
         clienteId: id,
-        livroId: 1,
+        livroId: livro.body().data.id,
         quantidade: 1,
       })
       .loginAs(user)

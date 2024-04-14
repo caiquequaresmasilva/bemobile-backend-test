@@ -10,7 +10,10 @@ test.group('Clientes store', (group) => {
   group.setup(async () => {
     user = await Usuario.create(USUARIO)
   })
-  group.teardown(() => testUtils.db().truncate())
+  group.teardown(async () => {
+    const truncate = await testUtils.db().truncate()
+    await truncate()
+  })
   test('Registra um novo cliente e retorna seus dados resumidos', async ({ client }) => {
     const response = await client.post(ENDPOINT).json(CLIENTE).loginAs(user)
     response.assertAgainstApiSpec()

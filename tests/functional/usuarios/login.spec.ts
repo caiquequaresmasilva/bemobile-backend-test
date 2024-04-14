@@ -8,7 +8,10 @@ test.group('Usuarios login', (group) => {
   group.setup(async () => {
     await Usuario.create(USUARIO)
   })
-  group.teardown(() => testUtils.db().truncate())
+  group.teardown(async () => {
+    const truncate = await testUtils.db().truncate()
+    await truncate()
+  })
   test('Retorna token de usuário logado', async ({ client }) => {
     const response = await client.post(ENDPOINT).json(USUARIO)
     response.assertAgainstApiSpec()

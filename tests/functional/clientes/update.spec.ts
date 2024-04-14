@@ -11,7 +11,10 @@ test.group('Clientes update', (group) => {
   group.setup(async () => {
     user = await Usuario.create(USUARIO)
   })
-  group.teardown(() => testUtils.db().truncate())
+  group.teardown(async () => {
+    const truncate = await testUtils.db().truncate()
+    await truncate()
+  })
   test('Atualiza dados de cliente na categoria "cliente"', async ({ client }) => {
     const resp = await client.post(ENDPOINT).json(CLIENTE).loginAs(user)
     id = resp.body().data.id
