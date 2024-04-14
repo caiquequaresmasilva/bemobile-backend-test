@@ -3,7 +3,9 @@ services:
   dev-db:
     image: mysql
     container_name: dev-db
-    restart: unless-stopped
+    restart: always
+    profiles:
+      - development
     env_file: ./.env
     volumes:
       - dev_db:/var/lib/mysql
@@ -12,5 +14,16 @@ services:
       - MYSQL_DATABASE=${DB_DATABASE}
     ports:
       - ${DB_PORT}:3306
+  test-db:
+    image: mysql
+    container_name: test-db
+    profiles:
+      - test
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=test
+      - MYSQL_DATABASE=api_test
+    ports:
+      - 3307:3306
 volumes:
   dev_db:
