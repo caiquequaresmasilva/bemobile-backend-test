@@ -19,6 +19,6 @@ export default class UsersController {
     const user = await this.service.verify({ email, senha })
     const token = await auth.use('jwt').generate(user)
 
-    response.status(201).json({ data: token })
+    response.status(200).json({ data: token })
   }
 }
