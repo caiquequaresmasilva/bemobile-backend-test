@@ -427,7 +427,6 @@ paths:
                           format: float
                         data:
                           type: string
-                          format: date-time
                         
                     
         '401':
