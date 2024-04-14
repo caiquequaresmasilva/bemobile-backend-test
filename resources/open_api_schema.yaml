@@ -1,0 +1,745 @@
+openapi: 3.0.3
+info:
+  title: API para o teste técnico da Bemobile para desenvolvedor Backend
+  description: Essa API foi desenvolvida como parte do processo seletivo para desenvolvedor backend da Bemobile. Se trata de uma API REST para gerenciamento de usuarios, clientes, vendas e produtos. Livros foram escolhidos como o produto base da API.
+  contact:
+    name: Caíque Quaresma Silva
+    email: caique.quaresma@gmail.com
+  version: 1.0.0
+servers:
+  - url: https://localhost:3333/
+tags:
+  - name: Usuario
+    description: Operações para acesso de usuário
+  - name: Cliente
+    description: Operações para o gerenciamento de clientes
+  - name: Livro
+    description: Operações para o gerenciamento de livros
+  - name: Venda
+    description: Operações para o gerenciamento de vendas
+paths:
+  /usuarios:
+    post:
+      tags:
+        - Usuario
+      summary: Registra um novo usuário
+      description: Registra um novo usuário da API caso seus dados estejam corretos. A senha deve conter pelo menos 8 caracteres, incluindo maiúscula, minúsculas e números.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+            example: 
+              email: usuario.test@email.com
+              senha: senhaSENHA42
+      responses:
+        '201':
+          description: Usuário criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                        format: email
+
+        '400':
+          description: Email já registrado
+        '422':
+          description: Dados para registro inválidos
+  /usuarios/login:
+    post:
+      tags:
+        - Usuario
+      summary: Loga um usuário já registrado
+      description: Loga um usuário registrado. Caso ele seja válido, um token JWT de acesso necessário em outros serviços será fornecido.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Usuario'
+            example: 
+              email: usuario.test@email.com
+              senha: senhaSENHA42
+      responses:
+        '200':
+          description: Usuário logado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      token:
+                        type: string
+              example: 
+                data:
+                  type: Bearer
+                  token: "eyJhbGciOiJIUz..."
+        '400':
+          description: Dados de login inválidos
+  /clientes:
+    post:
+      tags:
+        - Cliente
+      summary: Registra um novo cliente. Requer autenticação.
+      description: Caso os dados de cadastro estejam corretos, registra um novo cliente no sistema. Requer autenticação com o token JWT retornado ao se fazer login.
+      security: 
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: 
+                - nome
+                - email
+                - cpf
+                - logradouro
+                - bairro
+                - numero
+                - cidade
+                - uf
+                - cep
+                - telefone
+              properties:
+                nome: 
+                  type: string
+                email:
+                  type: string
+                  format: email
+                cpf:
+                  type: string
+                logradouro:
+                  type: string
+                bairro:
+                  type: string
+                numero:
+                  type: string
+                complemento:
+                  type: string
+                cidade:
+                  type: string
+                uf:
+                  type: string
+                cep:
+                  type: string
+                telefone:
+                  type: string
+            example: 
+              nome: Caíque Quaresma Silva
+              email: caique.quaresma@gmail.com
+              cpf: "12345678910"
+              logradouro: "Rua 15 de novembro"
+              bairro: "Vila Araguaia"
+              numero: "42"
+              complemento: "casa 2"
+              cidade: "São Paulo"
+              uf: "SP"
+              cep: "00032-180"
+              telefone: "11987581005"
+      responses:
+        '201':
+          description: Cliente registrado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    $ref: '#/components/schemas/Cliente'
+        '400':
+          description: CPF de cliente já registrado
+        '401':
+          description: Acesso não autorizado
+        '422':
+          description: Dados para registro inválidos
+    get:
+      tags:
+        - Cliente
+      summary: Retorna lista de clientes. Requer autenticação.
+      description: Caso o usuário esteja devidamente autenticado, retorna a lista de clientes registrados.
+      security: 
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de clientes cadastrados disponibilizada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Cliente'
+        '401':
+          description: Acesso não autorizado
+  /clientes/{id}:
+    patch:
+      tags:
+        - Cliente
+      summary: Edita as informações de um cliente.Requer autenticação.
+      description: Caso os dados estejam corretos, permite editar as informações de um cliente baseado em 4 categorias. cliente, dados, endereco, cep. Requer autenticação do usuário.
+      security: 
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: id do cliente a ser editado
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cliente:
+                  type: object
+                  properties:
+                    nome: 
+                      type: string
+                    email:
+                      type: string
+                      format: email
+                dados:
+                  type: object
+                  properties:
+                    cpf:
+                      type: string
+                    telefone:
+                      type: string
+                endereco:
+                  type: object
+                  properties:
+                    numero:
+                      type: string
+                    complemento:
+                      type: string
+                cep:
+                  type: object
+                  required: 
+                    - logradouro
+                    - bairro
+                    - cidade
+                    - uf
+                    - cep
+                  properties:
+                    logradouro:
+                      type: string
+                    bairro:
+                      type: string
+                    cidade:
+                      type: string
+                    uf:
+                      type: string
+                    cep:
+                      type: string
+                
+      responses:
+        '200':
+          description: Cliente editado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      nome: 
+                        type: string
+                      email:
+                        type: string
+                        format: email
+                      cpf:
+                        type: string
+                      logradouro:
+                        type: string
+                      bairro:
+                        type: string
+                      numero:
+                        type: string
+                      complemento:
+                        type: string
+                      cidade:
+                        type: string
+                      uf:
+                        type: string
+                      cep:
+                        type: string
+                      telefone:
+                        type: string
+                    
+        '401':
+          description: Acesso não autorizado
+        '404':
+          description: Cliente não encontrado
+        '422':
+          description: Dados para registro inválidos
+    get:
+      tags:
+        - Cliente
+      summary: Retorna informações completas de um cliente. Requer autenticação.
+      description: Caso exista, retorna todas as informações de cadastro de um cliente especificado. Requer autenticação.
+      security: 
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: id do cliente
+      responses:
+        '200':
+          description: Retorna dados do cliente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      nome: 
+                        type: string
+                      email:
+                        type: string
+                        format: email
+                      cpf:
+                        type: string
+                      logradouro:
+                        type: string
+                      bairro:
+                        type: string
+                      numero:
+                        type: string
+                      complemento:
+                        type: string
+                      cidade:
+                        type: string
+                      uf:
+                        type: string
+                      cep:
+                        type: string
+                      telefone:
+                        type: string
+                    
+        '401':
+          description: Acesso não autorizado
+        '404':
+          description: Cliente não encontrado
+    delete:
+      tags:
+        - Cliente
+      summary: Deleta o cliente requisitado. Requer autenticação.
+      description: Caso exista, deleta o cliente especificado. Requer autenticação
+      security: 
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: id do cliente
+      responses:
+        '204':
+          description: Cliente deletado com sucesso
+        '404':
+          description: Cliente não encontrado
+  /clientes/{id}/vendas:
+    get:
+      tags:
+        - Cliente
+      summary: Retorna as vendas do cliente especificado. Requer autenticação.
+      description: Caso exista, retorna todas as vendas atreladas ao cliente especificado. Requer autenticação.
+      security: 
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: id do cliente
+        - in: query
+          name: mes
+          schema:
+            type: integer
+          description: número referente ao mes requisitado
+        - in: query
+          name: ano
+          schema:
+            type: integer
+          description: número referente ao ano requisitado
+      responses:
+        '200':
+          description: Retorna listagem das vendas de um cliente especificado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        livro:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            titulo:
+                              type: string
+                            subtitulo:
+                              type: string
+                            autor:
+                              type: string
+                        precoUnitario:
+                          type: number
+                          format: float
+                        quantidade:
+                          type: integer
+                        precoTotal:
+                          type: number
+                          format: float
+                        data:
+                          type: string
+                          format: date-time
+                        
+                    
+        '401':
+          description: Acesso não autorizado
+        '404':
+          description: Cliente não encontrado
+  /livros:
+    post:
+      tags:
+        - Livro
+      summary: Registra um novo livro. Requer autorização.
+      description: Caso os dados estejam corretos, registra um novo livro no banco de dados. Requer autenticação.
+      security: 
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: 
+              - titulo
+              - autor
+              - preco
+              - editora
+              - idioma
+              - dimensoes
+              - publicacao
+              properties:
+                titulo: 
+                  type: string
+                subtitulo:
+                  type: string
+                autor:
+                  type: string
+                preco:
+                  type: number
+                  format: float
+                editora:
+                  type: string
+                idioma:
+                  type: string
+                dimensoes:
+                  type: string
+                publicacao:
+                  type: string
+            example: 
+              titulo: "As Crônicas de Gelo e Fogo"
+              subtitulo: "A Guerra dos Tronos"
+              autor: "George R. R. Martin"
+              preco: 76.16
+              editora: "Suma"
+              idioma: "Português"
+              dimensoes: "23.0 x 15.4 x 3.0"
+              publicacao: "25-03-2019"
+
+      responses:
+        '201':
+          description: Livro criado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    $ref: '#/components/schemas/Livro'
+        '401':
+          description: Acesso não autorizado
+        '422':
+          description: Dados para registro inválidos
+    get:
+      tags:
+        - Livro
+      summary: Retorna lista de produtos. Requer autorização
+      description: Com a devida autorização, retorna a lista de produtos cadastrados no database.
+      security: 
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Retorna lista de produtos.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Livro'
+                        
+                    
+        '401':
+          description: Acesso não autorizado
+  /livros/{id}:
+    patch:
+      tags:
+        - Livro
+      summary: Edita um produto especificado. Requer autorização
+      description: Caso os dados estejam corretos, edita o produto em questão com as novas informações. Requer autenticação. 
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: id do livro
+      security: 
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titulo:
+                  type: string
+                subtitulo:
+                  type: string
+                preco:
+                  type: number
+                  format: float
+      responses:
+        '200':
+          description: Livro editado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    $ref: '#/components/schemas/Livro'
+                    
+        '401':
+          description: Acesso não autorizado
+        '404':
+          description: Cliente não encontrado
+        '422':
+          description: Dados para registro inválidos
+    get:
+      tags:
+        - Livro
+      summary: Retorna detalhes de um livro especificado. Requer autenticação.
+      description: Caso exista, retorna um livro com todos os seus detalhes de registro. Requer autenticação.
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: id do livro
+      security: 
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Retorna detalhes do livro.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      titulo: 
+                        type: string
+                      subtitulo:
+                        type: string
+                      autor:
+                        type: string
+                      preco:
+                        type: number
+                        format: float
+                      editora:
+                        type: string
+                      idioma:
+                        type: string
+                      dimensoes:
+                        type: string
+                      publicacao:
+                        type: string
+        '401':
+          description: Acesso não autorizado
+        '404':
+          description: Livro não encontrado
+    delete:
+      tags:
+        - Livro
+      summary: Realiza a exclusão lógica de um livro. Requer autorização.
+      description: Caso exista, executa a exclusão lógica de um livro do banco de dados. Requer autorização. 
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: id do livro
+      security: 
+        - bearerAuth: []
+      responses:
+
+        '204':
+          description: Livro deletado.
+        '404':
+          description: Livro não encontrado.
+  /vendas:
+    post:
+      tags:
+        - Venda
+      summary: Cria nova venda. Requer autenticação.
+      description: Caso cliente e livro exista, e os dados estiverem corretos, cria uma nova venda no banco de dados. Requer autenticação.
+      security: 
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clienteId:
+                  type: integer
+                livroId:
+                  type: integer
+                quantidade:
+                  type: integer
+            example:
+              clienteId: 1
+              livroId: 1
+              quantidade: 5
+      responses:
+        '201':
+          description: Venda criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      quantidade:
+                        type: integer
+                      precoUnitario:
+                        type: integer
+                      precoTotal:
+                        type: integer
+                      clienteId:
+                        type: integer
+                      livroId:
+                        type: integer
+        '401':
+          description: Acesso não autorizado
+        '404':
+          description: Cliente ou livro não encontrado
+        '422':
+          description: Dados para registro inválidos
+
+components:
+  schemas:
+    Usuario:
+      type: object
+      required: 
+        - email
+        - senha
+      properties:
+        email:
+          type: string
+          format: email
+          example: caique.quaresma@gmail.com
+        senha:
+          type: string
+          format: password
+          example: senhaSENHA42
+    Cliente:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nome:
+          type: string
+          example: Caíque Quaresma Silva
+        email:
+          type: string
+          format: email
+          example: caique.quaresma@gmail.com
+    Livro:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        titulo:
+          type: string
+          example: "As Crônicas de Gelo e Fogo"
+        subtitulo:
+          type: string
+          example: "A Guerra dos Tronos"
+        autor:
+          type: string
+          example: "George R. R. Martin"
+        preco:
+          type: number
+          format: float
+          example: 76.16
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
