@@ -1,8 +1,16 @@
 # Teste técnico Desenvolvedor Backend Bemobile.
 
 # Objetivo
-
 Estruturar uma API RESTful conectada a um banco de dados.Trata-se de um sistema que permite cadastrar usuários externos. Ao realizarem login, estes usuários deverão poder registrar clientes, produtos e vendas. Livros foram o produto escolhido para a construção da API.
+
+---
+# Links
+* Deploy da API no vercel. A raíz redireciona para a documentação: https://caique-bemobile-api.vercel.app/
+
+* Documentação OpenAPI interativa via Swagger UI: https://bemobile-api-docs.vercel.app/doc/
+
+A especificação OpenAPI da aplicação se encontra em `resources/open_api_schema.yaml`.
+
 
 ## Principais Tecnologias usadas
 
@@ -37,7 +45,7 @@ TZ=UTC # Time Zone - deve ser mantido como UTC
 PORT=3333 # Porta de execução da API
 HOST=localhost # Host da API
 LOG_LEVEL=info # Configuração do Logger
-APP_KEY=JWT_SECRET # Secret do Token JWT
+APP_KEY=JWT_SECRET # Secret do Token JWT. Pelo padrão do Adonis.Js, deve possuir no mínimo 16 caracteres
 NODE_ENV=development # O ambiente NODE deve ser 'development'
 DB_HOST=127.0.0.1 # Host do database MySQL
 DB_PORT=3306 # Porta do database MySQL
@@ -46,7 +54,7 @@ DB_PASSWORD=development # Senha do database MySQL
 DB_DATABASE=api_development #Nome do database MySQL
 ``` 
 
-Configure as variáveis para se conectar com um banco de dados `MySQL` de sua preferência, ou, utilize o docker `MySQL` disponibilizado no projeto. Para tanto, instale o `Docker`e `Docker compose` nas versões indicadas acima, ou o `Docker Desktop`.
+Configure as variáveis para se conectar com um banco de dados `MySQL` de sua preferência, ou utilize o docker `MySQL` disponibilizado no projeto. Para tanto, instale o `Docker`e `Docker compose` nas versões indicadas acima, ou o `Docker Desktop`.
 
 * Para usar o banco de dados dockerizado, rode os scripts:
 
