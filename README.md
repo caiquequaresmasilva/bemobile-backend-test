@@ -237,7 +237,7 @@ npm run dev
 ---
 ### Rotas de Clientes
 ---
-* `POST /clientes`: Caso os dados sejam válidos, registra um novo cliente no sistema. Requer autenticação.
+* `POST /clientes`: Caso os dados sejam válidos, registra um novo cliente no sistema. O cep deve ser inserido no formato indicado. O cpf deve obedecer as regras de validação dos digitos verificadores de um número de cpf. Requer autenticação.
 
   Request Body
   ```json

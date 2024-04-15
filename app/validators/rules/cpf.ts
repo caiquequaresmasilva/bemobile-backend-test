@@ -1,6 +1,6 @@
 import vine from '@vinejs/vine'
 import { FieldContext } from '@vinejs/vine/types'
-
+// Algoritmo oficial pra validação de número de CPF
 const calculateDigit = (baseDigits: string, initialFactor: number = 0) => {
   let digit = 0
   for (let s of baseDigits) {
