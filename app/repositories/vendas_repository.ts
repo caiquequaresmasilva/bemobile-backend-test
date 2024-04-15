@@ -27,11 +27,13 @@ export default class VendasRepository {
   }
 
   private _filterFunction(ano: number, mes: number) {
-    return ({ data }: Venda) => {
-      const localDate = data.setZone('UTC-3')
-      return (
-        localDate.month === (mes || localDate.month) && localDate.year === (ano || localDate.year)
-      )
+    return ({ data, livro }: Venda) => {
+      if (livro) {
+        const localDate = data.setZone('UTC-3')
+        return (
+          localDate.month === (mes || localDate.month) && localDate.year === (ano || localDate.year)
+        )
+      }
     }
   }
 

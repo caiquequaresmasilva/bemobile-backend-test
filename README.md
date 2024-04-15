@@ -45,7 +45,7 @@ TZ=UTC # Time Zone - deve ser mantido como UTC
 PORT=3333 # Porta de execução da API
 HOST=localhost # Host da API
 LOG_LEVEL=info # Configuração do Logger
-APP_KEY=JWT_SECRET # Secret do Token JWT. Pelo padrão do Adonis.Js, deve possuir no mínimo 16 caracteres
+APP_KEY=yjy4yev1HsDne_s-fmiCxVXh2VHxnBiw # Secret do Token JWT.Deve ter no mínimo 16 caracteres
 NODE_ENV=development # O ambiente NODE deve ser 'development'
 DB_HOST=127.0.0.1 # Host do database MySQL
 DB_PORT=3306 # Porta do database MySQL
@@ -441,6 +441,10 @@ npm test functional -- --files nome_da_pasta/função # testes de uma função e
 npm run docker-test:down
 ```
 * `OBS:` Ao executar todos os testes de uma vez, existe um resultado variado. Hora todos os testes são aprovados, hora não. Acredito que seja alguma `Promise` perdida entre os Hooks das suites de testes, mas ainda não encontrei o problema exato. Mas a API se comporta como deveria ao realizar testes manuais.
+
+* Exemplo com todos os testes aprovados:
+
+    ![TESTES](/images/testes.png)
 ---
 
 
